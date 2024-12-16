@@ -19,10 +19,15 @@ fun main() {
         println("Исходная сетка:")
         sudoku.printGrid()
 
-        if (sudoku.solve()) {
-            println("\nРешенная сетка:")
-            sudoku.printGrid()
-        } else {
+        if(sudoku.validateInput()) {
+            if (sudoku.solve()) {
+                println("\nРешенная сетка:")
+                sudoku.printGrid()
+            } else {
+                println("Судоку не имеет решения.")
+            }
+        }
+        else{
             println("Судоку не имеет решения.")
         }
     } else {
