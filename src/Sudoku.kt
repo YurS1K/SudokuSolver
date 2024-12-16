@@ -91,9 +91,8 @@ class Sudoku(private val grid: Array<IntArray>) {
             for (j in 0..<3) {
                 for (k in 0..<3) {
                     val num = box[j][k]
-                    if (num != 0)
-                    {
-                        if(seen.contains(num)){
+                    if (num != 0) {
+                        if (seen.contains(num)) {
                             return false
                         }
                         seen.add(num)
@@ -106,42 +105,41 @@ class Sudoku(private val grid: Array<IntArray>) {
         return true
     }
 
-    fun validate(): Boolean {
+    fun validateNum(num: Int, row: Int, col: Int): Boolean {
+        var seen = emptySet<Int>().toHashSet()
         for (i in 0..<9) {
-            if (grid[i].toSet().size != 9 || grid[i].toSet().contains(0) ) {
+            if (seen.contains(num)) {
                 return false
             }
+            seen.add(grid[row][i])
         }
 
-        for (i in 0..<9)
-        {
-            val values = emptyList<Int>().toMutableList()
-            for (j in 0..<9) {
-                values.add(grid[j][i])
-            }
-            if(values.toSet().size != 9 || values.toSet().contains(0)) {
+        // Проверяем столбцы
+
+        seen = emptySet<Int>().toHashSet()
+        for (i in 0..<9) {
+            if (seen.contains(num)) {
                 return false
             }
+            seen.add(grid[i][col])
         }
 
-        // Проверяем 3x3 квадрат
-        for (i in 1..9) {
-            val box = this.getBox(i)
-            val values = emptyList<Int>().toMutableList()
-            for (j in 0..<3) {
-                for (k in 0..<3) {
-                    values.add(box[j][k])
+
+        // Проверяем квадраты 3x3
+        val box = this.getBox()
+        seen = emptySet<Int>().toHashSet()
+        for (j in 0..<3) {
+            for (k in 0..<3) {
+                if (seen.contains(num)) {
+                    return false
                 }
-            }
-            if(values.toSet().size != 9 || values.toSet().contains(0)) {
-                return false
+                seen.add(box[j][k])
             }
         }
-
         return true
     }
 
-    fun solve():Boolean {
+    fun solve(): Boolean {
         for (row in 0..<9) {
             for (col in 0..<9) {
                 if (grid[row][col] == 0) {
@@ -162,23 +160,21 @@ class Sudoku(private val grid: Array<IntArray>) {
     fun solveModifier(): Boolean {
         for (row in 0..<9) {
             for (col in 0..<9) {
-                if (grid[row][col] == 0) { // Найти пустую ячейку
+                if (grid[row][col] == 0) {
                     for (num in 1..9) {
-                        if (validateInput()) {
-                            grid[row][col] = num // Пробуем число
-
-                            if (solveModifier()) { // Рекурсивный вызов
+                        if (validateNum(num, row, col)) {
+                            grid[row][col] = num
+                            if (solveModifier()) {
                                 return true
                             }
-
-                            grid[row][col] = 0 // Возвращаемся назад
+                            grid[row][col] = 0
                         }
                     }
-                    return false // Не удалось решить
+                    return false
                 }
             }
         }
-        return true // Судоку решено
+        return true
     }
 
 }
