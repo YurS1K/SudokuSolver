@@ -112,6 +112,7 @@ class Sudoku(private val grid: Array<IntArray>) {
                 return false
             }
             seen.add(grid[row][i])
+            kkk
         }
 
         // Проверяем столбцы
